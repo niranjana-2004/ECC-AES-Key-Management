@@ -48,8 +48,9 @@ class TestCompleteWorkflow(unittest.TestCase):
             package = protect_aes_key(aes_key, public_key)
 
             # Split and reconstruct the protected package
-            part1, part2 = split_protected_key(package)
-            reconstructed = reassemble_protected_key(part1, part2)
+            key_metadata, part1, part2 = split_protected_key(package)
+
+            reconstructed = reassemble_protected_key(key_metadata,part1,part2)
 
             # Recover the AES key
             recovered_key = recover_aes_key(

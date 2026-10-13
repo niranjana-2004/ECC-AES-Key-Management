@@ -110,16 +110,24 @@ def benchmark_communication():
     package = protect_aes_key(aes_key, public_key)
 
     serialized = serialize_protected_key(package)
-    part1, part2 = split_protected_key(package)
+    metadata, part1, part2 = split_protected_key(package)
 
     rows = [
-        {"item": "Serialized protected-key package",
-         "size_bytes": len(serialized)},
-        {"item": "Split part 1", "size_bytes": len(part1)},
-        {"item": "Split part 2", "size_bytes": len(part2)},
-        {"item": "Total split-part bytes",
-         "size_bytes": len(part1) + len(part2)},
-    ]
+    {
+        "item": "Serialized protected-key package",
+        "size_bytes": len(serialized),
+    },
+    {
+        "item": "Wrapped AES-key payload",
+        "size_bytes": len(package["wrapped_key"]),
+    },
+    {"item": "Split part 1", "size_bytes": len(part1)},
+    {"item": "Split part 2", "size_bytes": len(part2)},
+    {
+        "item": "Total split-part bytes",
+        "size_bytes": len(part1) + len(part2),
+    },
+]
 
     print("\n--- Communication-size benchmark ---")
 
