@@ -4,7 +4,7 @@
 venv/
 env/
 
-# Python generated files
+# Python cache files
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -12,11 +12,10 @@ __pycache__/
 # Environment variables and secrets
 .env
 .env.*
-!.env.example
 
 # IDE settings
 .vscode/
 
-# Generated experiment results (keep the folder)
+# Generated experiment results
 results/*
 !results/.gitkeep
