@@ -1,0 +1,2 @@
+This is my research project on efficient and scalable key management.
+I am testing AES encryption and ECC-based key protection.
