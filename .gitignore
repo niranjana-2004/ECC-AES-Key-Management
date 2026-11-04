@@ -19,3 +19,8 @@ __pycache__/
 # Generated experiment results
 results/*
 !results/.gitkeep
+
+# Cryptographic private keys
+keys/
+*.pem
+*.key
