@@ -1,5 +1,6 @@
-
 from pathlib import Path
+
+from src.auth_service import login
 
 from src.cloud_workflow import (
     encrypt_and_upload,
@@ -21,8 +22,15 @@ print("=" * 55)
 print("ECC-AES CLOUD STORAGE INTEGRATION TEST")
 print("=" * 55)
 
+# Step 0: Authenticate user.
+user = login()
+
+if user is None:
+    raise RuntimeError("Authentication failed.")
+
 # Step 1: Encrypt and upload.
 object_prefix = encrypt_and_upload(
+    user,
     str(original_file)
 )
 
@@ -30,6 +38,7 @@ print("\nUploaded object prefix:", object_prefix)
 
 # Step 2: Download and decrypt.
 download_and_decrypt(
+    user,
     object_prefix,
     str(recovered_file),
 )

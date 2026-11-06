@@ -1,4 +1,5 @@
-
+from src.auth_service import login
+from src.access_control import Permission, has_permission
 import base64
 import json
 import tempfile
@@ -40,11 +41,18 @@ def _decode_bytes(data: str) -> bytes:
     return base64.b64decode(data, validate=True)
 
 
-def encrypt_and_upload(input_path: str) -> str:
+def encrypt_and_upload(user,input_path: str) -> str:
     """
     Encrypt a document, protect and split its AES key,
     then upload all required components to MinIO.
     """
+    if user is None:
+        raise PermissionError("Authentication required.")
+
+    if not has_permission(user["role"], Permission.UPLOAD):
+        raise PermissionError(
+            f"Access denied: {user['role']} does not have UPLOAD permission."
+        )
 
     source = Path(input_path)
 
@@ -158,6 +166,7 @@ def encrypt_and_upload(input_path: str) -> str:
 
 
 def download_and_decrypt(
+    user,
     object_prefix: str,
     output_path: str,
 ) -> str:
@@ -165,6 +174,13 @@ def download_and_decrypt(
     Download encrypted document and protected key components,
     recover the AES key, and decrypt the document.
     """
+    if user is None:
+        raise PermissionError("Authentication required.")
+
+    if not has_permission(user["role"], Permission.DOWNLOAD):
+        raise PermissionError(
+            f"Access denied: {user['role']} does not have DOWNLOAD permission."
+        )
 
     print("\n[1] Loading ECC recipient private key...")
 
