@@ -2,16 +2,10 @@ from getpass import getpass
 
 from src.user_database import authenticate_user
 from src.access_control import Role
+from src.two_factor_auth import verify_totp
 
 
 def login():
-    """
-    Authenticate a user through the CLI.
-
-    Returns the authenticated user record,
-    or None if authentication fails.
-    """
-
     print("\n===== ESKMS LOGIN =====")
 
     username = input("Username: ").strip()
@@ -23,6 +17,18 @@ def login():
         print("\nAuthentication failed.")
         return None
 
+    # Check whether 2FA is enabled for this account
+    if user["two_factor_enabled"]:
+        print("\nTwo-factor authentication enabled.")
+
+        code = getpass("Enter 6-digit TOTP code: ").strip()
+
+        if not verify_totp(user["two_factor_secret"], code):
+            print("\nAuthentication failed: Invalid 2FA code.")
+            return None
+
+        print("2FA verification successful!")
+
     print("\nLogin successful!")
     print(f"Username : {user['username']}")
     print(f"Role     : {user['role']}")
@@ -31,11 +37,6 @@ def login():
 
 
 def require_role(user, allowed_roles):
-    """
-    Check whether the authenticated user has one
-    of the required roles.
-    """
-
     if user is None:
         raise PermissionError("Authentication required.")
 
