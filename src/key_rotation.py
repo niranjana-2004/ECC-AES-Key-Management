@@ -32,3 +32,13 @@ def rotate_ecc_key_pair(
     )
 
     return new_private_key, new_public_key, new_protected_package
+
+from src.aes_encryption import generate_aes_key
+def rotate_aes_data_key():
+    """
+    Generate a new AES data key for key rotation.
+
+    Returns:
+        bytes: New AES-256 data key.
+    """
+    return generate_aes_key()
